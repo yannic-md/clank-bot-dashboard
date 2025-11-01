@@ -83,12 +83,16 @@
           <!-- Items -->
           @for (feature of sortFeatureList(); track $index) {
             @if (feature.enabled) {
-              <div [@fadeInOut] class="bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800
-                                      dark:via-slate-800 dark:to-slate-900 hover:from-blue-50 hover:via-slate-100
-                                      hover:to-blue-100 dark:hover:from-slate-700 dark:hover:via-slate-800
-                                      dark:hover:to-slate-800 flex h-[380px] flex-col overflow-hidden rounded-2xl
-                                       shadow transition-colors duration-500 !border-gray-300 dark:!border-gray-700 border-1">
-                <div class="flex flex-col p-6">
+              <div [@fadeInOut] class="relative bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800
+                                       dark:via-slate-800 dark:to-slate-900 flex h-[380px] flex-col overflow-hidden
+                                       rounded-2xl shadow hover:shadow-xl transition-all duration-500 !border-gray-300
+                                       dark:!border-gray-700 border-1 before:absolute before:inset-0
+                                       before:bg-gradient-to-br before:from-white before:via-slate-50
+                                       before:to-blue-50 dark:before:from-slate-800 dark:before:via-slate-800
+                                       dark:before:to-slate-900 before:rounded-2xl before:transition-all
+                                       before:duration-500 hover:before:brightness-[0.90]
+                                       dark:hover:before:brightness-125 before:z-0">
+                <div class="flex flex-col p-6 relative z-10">
                   <!-- Head -->
                   <div class="flex items-center justify-between">
                     <div class="rounded-full px-3 py-0.5 text-xs font-semibold text-white transition-colors
@@ -137,7 +141,7 @@
                                         (feature.votes / (feature.votes + feature.dislikes)) * 100 < 50,
                        'bg-green-500': (feature.votes / (feature.votes + feature.dislikes)) * 100 >= 50}"></div>
                   </div>
-                  <div class="px-6 py-3 bg-transparent flex justify-between transition-colors duration-500">
+                  <div class="px-6 py-3 bg-transparent flex justify-between transition-colors duration-500 relative">
                     @if (!this.isLoadingActive(feature.id)) {
                       <button (click)="sendFeatureVote(feature.id, false)" [disabled]="isCooldownActive(feature.id)"
                               [ngClass]="isCooldownActive(feature.id) ? 'cursor-not-allowed bg-gray-600' : 'cursor-pointer bg-gradient-to-r hover:bg-gradient-to-br'"

@@ -628,6 +628,9 @@ export class DataHolderService {
     } else {
       this.error_title = `ERROR_LOGIN_${type}_TITLE`
       this.error_desc = `ERROR_LOGIN_${type}_DESC`
+
+      localStorage.removeItem('active_guild');
+      this.active_guild = null;
     }
 
     if (type === 'NO_CLANK') {
