@@ -181,7 +181,7 @@ describe('DashboardComponent', () => {
     tick();
 
     expect(component['servers']).toEqual(mockGuildUsage);
-    tick(250);
+    tick(500);
     expect(apiService.getModuleStatus).toHaveBeenCalledWith('guild1', true);
     expect(component['updateTasks']).toHaveBeenCalledWith(mockModuleStatus);
     expect(component['dataService'].isLoading).toBe(false);
@@ -207,7 +207,7 @@ describe('DashboardComponent', () => {
 
     component.getServerData();
     tick();
-    tick(250);
+    tick(500);
 
     expect(localStorage.getItem('moduleStatus')).toBeNull();
   }));
@@ -239,7 +239,7 @@ describe('DashboardComponent', () => {
 
     component.getServerData();
     tick();
-    tick(250);
+    tick(500);
 
     expect(handleErrorSpy).toHaveBeenCalledWith(error);
   }));

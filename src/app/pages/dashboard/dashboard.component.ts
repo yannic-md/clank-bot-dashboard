@@ -153,7 +153,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
                 this.handleError(err);
               }
             });
-          }, 250);
+          }, 500);
         },
         error: (err: HttpErrorResponse): void => {
           if (guildUsageSub) { guildUsageSub.unsubscribe(); }
