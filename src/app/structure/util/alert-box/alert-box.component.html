@@ -1,7 +1,8 @@
 <div @fadeAnimation class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 mx-auto flex items-center p-4 mb-4 rounded-lg
                          bg-red-50 dark:bg-gray-800 border-1 transition-all duration-500 w-4/5 md:max-w-2xl"
-     [ngClass]="this.dataService.error_color == 'red' ? 'text-red-800 dark:text-red-400 !border-red-600' :
-                                                        'text-green-800 dark:text-green-400 !border-green-600'">
+     [ngClass]="this.dataService.error_color == 'red'    ? 'text-red-800 dark:text-red-400 !border-red-600' :
+                this.dataService.error_color == 'yellow' ? 'text-yellow-800 dark:text-yellow-400 !border-yellow-600' :
+                                                           'text-green-800 dark:text-green-400 !border-green-600'">
   <fa-icon [icon]="faBug" class="flex-shrink-0 mb-2 w-4 h-4"></fa-icon>
   <span class="sr-only">Info</span>
   <div class="ms-3 text-sm font-medium me-2">

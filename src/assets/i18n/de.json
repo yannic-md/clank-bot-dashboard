@@ -377,6 +377,8 @@
   "ERROR_UNKNOWN_DESC": "› Ein unbekannter Fehler ist aufgetreten - Kontaktiere den Support!",
   "ERROR_OFFLINE_TITLE": "📡 ~ Server ist offline!",
   "ERROR_OFFLINE_DESC": "› Der Server ist aktuell nicht erreichbar - bitte versuche es später erneut.",
+  "WARNING_GUILDS_TITLE": "Server aktualisiert, ABER",
+  "WARNING_GUILDS_DESC": "Es werden nur Server angezeigt, die das Discord-Feature <strong>\"COMMUNITY\"</strong> aktiviert haben und wo du <strong>Admin-Rechte besitzt</strong>.",
 
   "ERROR_VOTE_SAME_TITLE": "Keine Änderung",
   "ERROR_VOTE_SAME_DESC": "Dein Vote bleibt unverändert, da du bereits dafür gestimmt hast.",

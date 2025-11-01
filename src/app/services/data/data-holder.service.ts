@@ -38,7 +38,7 @@ export class DataHolderService {
   // error handler related
   error_title: string = 'ERROR_UNKNOWN_TITLE';
   error_desc: string = 'ERROR_UNKNOWN_DESC';
-  error_color: 'red' | 'green' = 'red';
+  error_color: 'red' | 'green' | 'yellow' = 'red';
   faq_answer: string = '';
   showAlertBox: boolean = false;
 
@@ -131,6 +131,12 @@ export class DataHolderService {
             // format thousand approximate_member_count with dot
             guild.approximate_member_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_member_count));
             guild.approximate_presence_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_presence_count));
+
+            if (cache_btn) { // add little notice why some guilds are probaly missing
+              this.error_color = 'yellow';
+              this.showAlert(this.translate.instant('WARNING_GUILDS_TITLE'),
+                this.translate.instant('WARNING_GUILDS_DESC'));
+            }
 
             return guild;
           }).sort((a: Guild, b: Guild): number => a.name.localeCompare(b.name));  // filter guilds based on name
