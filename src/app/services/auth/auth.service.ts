@@ -50,6 +50,7 @@ export class AuthService {
 
           // remove query parameters from URL
           this.router.navigateByUrl('/dashboard').then((): void => {
+            localStorage.setItem("first_login", "true");
             if (fetch_profile) {
               this.getProfileInfo();
             } else {

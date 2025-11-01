@@ -11,7 +11,7 @@ import {faTruckMedical, IconDefinition} from "@fortawesome/free-solid-svg-icons"
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {RouterLink} from "@angular/router";
-import {forkJoin, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/Tasks";
 import {DashboardLayoutComponent} from "../../structure/dashboard-layout/dashboard-layout.component";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons";
@@ -121,40 +121,66 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
     if (!window.location.href.endsWith('/dashboard')) { return; }
     this.startLoading = true;
 
-    let sub: Subscription | null = null;
-    sub = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
-                    moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
+    // always refresh cache if user logged in for the first time
+    const isFirstLogin: boolean = localStorage.getItem("first_login") !== null;
+
+    let guildUsageSub: Subscription | null = null;
+    guildUsageSub = this.apiService.getGuildUsage(100)
       .subscribe({
-        next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
-          this.updateTasks(moduleStatus);
+        next: (guildUsage: SliderItems[]): void => {
           this.servers = guildUsage;
+          if (guildUsageSub) { guildUsageSub.unsubscribe(); }
 
-          this.dataService.isLoading = false;
-          this.startLoading = false;
+          // Fetch module status after guild usage is loaded
+          let moduleStatusSub: Subscription | null = null;
+          setTimeout((): void => {
+            moduleStatusSub = this.apiService.getModuleStatus(this.dataService.active_guild!.id, isFirstLogin ? true : no_cache)
+            .subscribe({
+              next: (moduleStatus: TasksCompletionList): void => {
+                this.updateTasks(moduleStatus);
 
-          if (sub) { sub.unsubscribe(); }
-          if (moduleStatus['task_1'].cached) { return; }
-          localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
-          localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
+                this.dataService.isLoading = false;
+                this.startLoading = false;
+
+                if (moduleStatusSub) { moduleStatusSub.unsubscribe(); }
+                if (moduleStatus['task_1'].cached) { return; }
+                localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
+                localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
+                if (isFirstLogin) { localStorage.removeItem('first_login'); }
+              },
+              error: (err: HttpErrorResponse): void => {
+                if (moduleStatusSub) { moduleStatusSub.unsubscribe(); }
+                this.handleError(err);
+              }
+            });
+          }, 250);
         },
         error: (err: HttpErrorResponse): void => {
-          if (sub) { sub.unsubscribe(); }
-          if (err.status === 403) {
-            this.dataService.redirectLoginError('FORBIDDEN');
-            return;
-          } else if (err.status === 401) {
-            this.dataService.redirectLoginError('NO_CLANK');
-            return;
-          } else if (err.status === 429) {
-            this.dataService.redirectLoginError('REQUESTS');
-            return;
-          } else if (err.status === 0) {
-            this.dataService.redirectLoginError('OFFLINE');
-            return;
-          }
-          this.dataService.isLoading = false;
+          if (guildUsageSub) { guildUsageSub.unsubscribe(); }
+          this.handleError(err);
         }
-    });
+      });
+  }
+
+  /**
+   * Handles HTTP errors that occur during API requests.
+   * Redirects the user to the login page with an appropriate error message
+   * based on the HTTP status code, and stops the loading state.
+   *
+   * @param err - The HTTP error response from the failed request.
+   */
+  private handleError(err: HttpErrorResponse): void {
+    if (err.status === 403) {
+      this.dataService.redirectLoginError('FORBIDDEN');
+    } else if (err.status === 401) {
+      this.dataService.redirectLoginError('NO_CLANK');
+    } else if (err.status === 429) {
+      this.dataService.redirectLoginError('REQUESTS');
+    } else if (err.status === 0) {
+      this.dataService.redirectLoginError('OFFLINE');
+    }
+
+    this.dataService.isLoading = false;
   }
 
   /**
