@@ -42,7 +42,7 @@
     "bootstrap": "^5.3.2",
     "canvas": "^2.11.2",
     "dompurify": "^3.2.6",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "rxjs": "~7.8.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths-jest": "^0.0.1",
